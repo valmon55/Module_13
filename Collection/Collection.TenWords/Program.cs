@@ -5,32 +5,31 @@
         static void Main(string[] args)
         {
             List<WordCount> list = new List<WordCount>();
+            string file = @"D:\Temp\13_6_2_Text.txt";
 
-            using (StreamReader sr = File.OpenText(@"D:\Temp\13_6_2_Text.txt"))
-            {
-                string s = sr.ReadToEnd();
-                //string s = "aa1 aa2aaa>aa<!bb.bbb?<aa>";
-                string noPunct_s = new string(s.Where(c => !char.IsPunctuation(c)).ToArray());
-                //char[] delimiters = { ' ', '\r', '\n', '<', '>', '(',')', '.', ',', ':', '–',
-                //                      ';', '!', '?','1','2','3','4','5','6','7','8','9','0' };
-                //string[] w = s.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-                char[] delimiters = { ' ', '\r', '\n', '–' };
-                string[] w = noPunct_s.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-
-                //string[] w = { "aa", "aa", "bb", "aa", "cc", "bb", "cc", "cc","aa","dd","cc","aa" };
-
-                foreach (string word in w)
+            if (File.Exists(file))
+                using (StreamReader sr = File.OpenText(file))
                 {
-                    list.Add(new WordCount(word.ToLower(), 1));
+                    string s = sr.ReadToEnd();
+                    
+                    string noPunct_s = new string(s.Where(c => !char.IsPunctuation(c)).ToArray());
+                    
+                    char[] delimiters = { ' ', '\r', '\n', '–' };
+                    string[] w = noPunct_s.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (string word in w)
+                    {
+                        list.Add(new WordCount(word.ToLower(), 1));
+                    }
+
+                    MergeList(ref list);
+                    
+                    list.Sort(SortByNumDesc);
+
+                    PrintWords(list, 10);
                 }
-
-                MergeList(ref list);
-                //SortList(ref list);
-                list.Sort(SortByNumDesc);
-
-                PrintWords(list, 10);
-            }
-
+            else
+                Console.WriteLine("Файл не найден");
             Console.ReadKey();
         }
         /// <summary>
